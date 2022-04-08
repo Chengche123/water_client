@@ -10,7 +10,15 @@ const routes = [
   {
     path: '/login',
     name: 'login',
-    component: () => import(/* webpackChunkName: "login" */ '../views/login/Login.vue')
+    component: () => import(/* webpackChunkName: "login" */ '../views/login/Login.vue'),
+    beforeEnter: async (to, from, next) => {
+      try {
+        await axios.get("/user");
+        next({ name: 'home' })
+      } catch (error) {
+        next()
+      }
+    },
   },
 ]
 
