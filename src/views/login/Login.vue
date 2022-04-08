@@ -40,12 +40,6 @@
         <button @click="handleLogin" class="w-100 btn btn-lg btn-primary">
           登录
         </button>
-        <button
-          @click="handleRegister"
-          class="w-100 btn btn-lg btn-secondary mt-3"
-        >
-          注册
-        </button>
       </form>
     </div>
   </div>
@@ -71,22 +65,20 @@ export default {
   methods: {
     async handleLogin() {
       try {
-        await axios.post("/users/login", {
-          username: "Fred",
-          password: "Flintstone",
+        await axios.get("/users/login", {
+          auth: {
+            username: this.username,
+            password: this.password,
+          },
         });
-        localStorage.isLogin = true;
         this.$router.push({ name: "home" });
       } catch (error) {
-        this.toastParams.body = "登录失败";
+        this.toastParams.body = error.response.data.detail;
         this.showToast = true;
         setTimeout(() => {
           this.showToast = false;
         }, 2000);
       }
-    },
-    handleRegister() {
-      this.$router.push({ name: "register" });
     },
   },
 };
