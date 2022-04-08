@@ -6,8 +6,8 @@
       top-50
       start-50
       translate-middle
-      opacity-75
     "
+    style="opacity: 0.85;"
   >
     <ToastView
       class="position-absolute top-50 start-50 translate-middle"
@@ -25,7 +25,7 @@
             id="floatingInput"
             autocomplete="off"
           />
-          <label for="floatingInput">账号</label>
+          <label class="text-info" for="floatingInput">账号</label>
         </div>
         <div class="form-floating mb-3">
           <input
@@ -35,7 +35,7 @@
             id="floatingPassword"
             autocomplete="off"
           />
-          <label for="floatingPassword">密码</label>
+          <label class="text-info" for="floatingPassword">密码</label>
         </div>
         <button @click="handleLogin" class="w-100 btn btn-lg btn-primary">
           登录
