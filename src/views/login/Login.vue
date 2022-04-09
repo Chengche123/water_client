@@ -6,8 +6,8 @@
       top-50
       start-50
       translate-middle
+      opacity-75
     "
-    style="opacity: 0.85;"
   >
     <ToastView
       class="position-absolute top-50 start-50 translate-middle"
