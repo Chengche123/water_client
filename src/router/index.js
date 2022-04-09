@@ -20,6 +20,11 @@ const routes = [
       }
     },
   },
+  {
+    path: '/test',
+    name: 'test',
+    component: () => import(/* webpackChunkName: "test" */ '../components/lineChart.vue')
+  },
   { path: '/:pathMatch(.*)*', name: 'NotFound', redirect: { name: 'home' } },
 ]
 
