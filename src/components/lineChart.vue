@@ -10,32 +10,15 @@
     :width="width"
     :height="height"
   />
-
-  <button @click="handleAddClick">增加</button>
 </template>
 
 <script>
 import { Line } from "vue-chartjs";
 import "chart.js/auto";
-import colorLib from "@kurkle/color";
-
-function transparentize(value, opacity) {
-  var alpha = opacity === undefined ? 0.5 : 1 - opacity;
-  return colorLib(value).alpha(alpha).rgbString();
-}
-
-const CHART_COLORS = {
-  red: "rgb(255, 99, 132)",
-  orange: "rgb(255, 159, 64)",
-  yellow: "rgb(255, 205, 86)",
-  green: "rgb(75, 192, 192)",
-  blue: "rgb(54, 162, 235)",
-  purple: "rgb(153, 102, 255)",
-  grey: "rgb(201, 203, 207)",
-};
+import { CHART_COLORS, transparentize } from "../utils/utils.js";
 
 export default {
-  name: "LineChartView",
+  name: "LineChart",
   components: {
     Line,
   },
@@ -50,11 +33,11 @@ export default {
     },
     width: {
       type: Number,
-      default: 200,
+      default: 400,
     },
     height: {
       type: Number,
-      default: 200,
+      default: 400,
     },
     cssClasses: {
       default: "",
@@ -68,50 +51,54 @@ export default {
       type: Object,
       default: () => {},
     },
+    labels: {
+      type: Array,
+      default: () => [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+      ],
+    },
+    datasets: {
+      type: Array,
+      default: () => [
+        {
+          label: "Dataset 1",
+          data: [40, 39, 10, 40, 39, 80, 40],
+          borderColor: CHART_COLORS.red,
+          backgroundColor: transparentize(CHART_COLORS.red, 0.5),
+        },
+      ],
+    },
+  },
+  computed: {
+    chartData() {
+      return {
+        labels: this.labels,
+        datasets: this.datasets,
+      };
+    },
   },
   data() {
     return {
-      chartData: {
-        labels: [
-          "January",
-          "February",
-          "March",
-          "January",
-          "February",
-          "March",
-          "January",
-          "February",
-          "March",
-          "January",
-          "February",
-          "March",
-        ],
-        datasets: [
-          {
-            label: "Dataset 1",
-            data: [40, 20, 12, 40, 20, 12, 40, 20, 12, 40, 20, 12],
-            borderColor: CHART_COLORS.red,
-            backgroundColor: transparentize(CHART_COLORS.red, 0.5),
-          },
-          // {
-          //   label: "Dataset 2",
-          //   data: [20, 12, 40, 20, 12, 40],
-          //   borderColor: "blue",
-          //   backgroundColor: "black",
-          // },
-        ],
-      },
       chartOptions: {
+        animation: {
+          duration: 0,
+        },
         responsive: true,
+        scales: {
+          y: {
+            ticks: {
+              precision: 2,
+            },
+          },
+        },
       },
     };
-  },
-  methods: {
-    handleAddClick() {
-      this.chartData.datasets[0].data =
-        this.chartData.datasets[0].data.concat(34);
-      this.chartData.labels = this.chartData.labels.concat("Foo");
-    },
   },
 };
 </script>
