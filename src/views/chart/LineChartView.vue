@@ -3,7 +3,6 @@
   <div class="text-center">
     <button @click="handleClick">测试</button>
   </div>
-  <!-- <div>{{ msgData.code == code ? msgData : "" }}</div> -->
 </template>
 
 <script>
@@ -23,10 +22,7 @@ export default {
     LineChart,
   },
   props: {
-    msgData: {
-      type: Object,
-    },
-    code: {
+    sensorCode: {
       type: Number,
     },
     dataPath: {
@@ -41,7 +37,7 @@ export default {
     try {
       const response = await axios.get(this.dataPath, {
         params: {
-          code: this.code,
+          code: this.sensorCode,
           limit: 10,
           offset: 0,
         },
@@ -77,13 +73,12 @@ export default {
     }
   },
   watch: {
-    msgData: function (val) {
+    "$store.state.hx2022MsgData": function (val) {
       if (!val?.value) {
         return;
       }
       this.labels = this.labels.slice(1).concat(parseUdatetime(val.udatetime));
       this.datasets[0].data = this.datasets[0].data.slice(1).concat(val.value);
-      console.log(val.value);
     },
   },
   data() {
