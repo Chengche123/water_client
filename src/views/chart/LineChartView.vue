@@ -71,9 +71,15 @@ export default {
   },
   watch: {
     "$store.state.hx2022MsgData": function (val) {
-      if (!val?.value) {
+      if (!val) {
         return;
       }
+
+      // 只接受发给该页面的数据
+      if (val.code != this.sensorCode) {
+        return;
+      }
+
       this.labels = this.labels.slice(1).concat(parseUdatetime(val.udatetime));
       this.datasets[0].data = this.datasets[0].data.slice(1).concat(val.value);
     },
