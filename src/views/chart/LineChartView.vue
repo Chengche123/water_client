@@ -1,7 +1,7 @@
 <template>
   <LineChart :labels="labels" :datasets="datasets" />
   <div class="text-center">
-    <button @click="handleClick">测试</button>
+    <!-- <button @click="handleClick">测试</button> -->
   </div>
 </template>
 
@@ -61,7 +61,7 @@ export default {
     try {
       const response = await axios.get(this.sensorPath, {
         params: {
-          code: this.code,
+          code: this.sensorCode,
         },
       });
       const sensorInfo = response.data?.results?.[0];
