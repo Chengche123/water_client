@@ -1,5 +1,9 @@
 <template>
-  <LineChart :labels="labels" :datasets="datasets" />
+  <LineChart
+    :labels="labels"
+    :datasets="datasets"
+    :chartOptions="chartOptions"
+  />
   <div class="text-center">
     <!-- <button @click="handleClick">测试</button> -->
   </div>
@@ -61,10 +65,14 @@ export default {
           code: this.sensorCode,
         },
       });
+
       const sensorInfo = response.data?.results?.[0];
-      if (sensorInfo) {
-        this.datasets[0].label = `${sensorInfo.address} - ${sensorInfo.sensortypename}`;
+      if (!sensorInfo) {
+        return;
       }
+      this.datasets[0].label = `${sensorInfo.address} - ${sensorInfo.sensortypename}`;
+      console.log(sensorInfo);
+      this.chartOptions.scales.y.title.text = `${sensorInfo.sensortypename}/${sensorInfo.measurename}`;
     } catch (error) {
       console.log(error);
     }
@@ -96,8 +104,34 @@ export default {
           pointStyle: "circle",
           pointRadius: 5,
           pointHoverRadius: 10,
+          fill: "start",
         },
       ],
+      chartOptions: {
+        animation: {
+          duration: 0,
+        },
+        responsive: true,
+        scales: {
+          y: {
+            ticks: {
+              precision: 2,
+            },
+            title: {
+              color: "black",
+              display: true,
+              text: "",
+            },
+          },
+          x: {
+            title: {
+              color: "black",
+              display: true,
+              text: "时间 / 时:分:秒",
+            },
+          },
+        },
+      },
     };
   },
   methods: {
