@@ -23,12 +23,9 @@ export default {
   },
   props: {
     sensorCode: {
-      type: Number,
-    },
-    dataPath: {
       type: String,
     },
-    sensorPath: {
+    dataPath: {
       type: String,
     },
   },
@@ -59,7 +56,7 @@ export default {
 
     // 获取传感器信息
     try {
-      const response = await axios.get(this.sensorPath, {
+      const response = await axios.get(this.$store.state.sensorPath, {
         params: {
           code: this.sensorCode,
         },
