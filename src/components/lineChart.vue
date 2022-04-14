@@ -74,6 +74,9 @@ export default {
         },
       ],
     },
+    chartOptions: {
+      type: Object,
+    },
   },
   computed: {
     chartData() {
@@ -84,21 +87,7 @@ export default {
     },
   },
   data() {
-    return {
-      chartOptions: {
-        animation: {
-          duration: 0,
-        },
-        responsive: true,
-        scales: {
-          y: {
-            ticks: {
-              precision: 2,
-            },
-          },
-        },
-      },
-    };
+    return {};
   },
 };
 </script>
