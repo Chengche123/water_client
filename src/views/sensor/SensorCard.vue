@@ -92,7 +92,15 @@ export default {
     },
   },
   methods: {
-    handleClick() {},
+    handleClick() {
+      if (!this.isRunning) {
+        return;
+      }
+      this.$router.push({
+        name: "sensor-detail",
+        params: { sensorCode: this.sensorJson.code },
+      });
+    },
   },
 };
 </script>
