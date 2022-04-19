@@ -71,7 +71,6 @@ export default {
         return;
       }
       this.datasets[0].label = `${sensorInfo.address} - ${sensorInfo.sensortypename}`;
-      console.log(sensorInfo);
       this.chartOptions.scales.y.title.text = `${sensorInfo.sensortypename}/${sensorInfo.measurename}`;
     } catch (error) {
       console.log(error);
