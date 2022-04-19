@@ -25,7 +25,6 @@ export default {
   },
   mounted() {
     this.sensorCode = this.$route.params.sensorCode;
-    console.log(this.sensorCode);
   },
 };
 </script>
