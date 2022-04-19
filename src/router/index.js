@@ -1,5 +1,6 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import axios from 'axios'
+import store from '@/store';
 
 const routes = [
   {
@@ -23,9 +24,25 @@ const routes = [
   {
     path: '/test',
     name: 'test',
-    component: () => import(/* webpackChunkName: "test" */ '../components/lineChart.vue')
+    component: () => import(/* webpackChunkName: "test" */ '../views/Test')
+  },
+  {
+    path: '/test1',
+    name: 'test1',
+    component: () => import(/* webpackChunkName: "test1" */ '../views/sensor/SensorList')
   },
   { path: '/:pathMatch(.*)*', name: 'NotFound', redirect: { name: 'home' } },
+  {
+    path: '/sensor-detail',
+    name: 'sensor-detail',
+    component: () => import(/* webpackChunkName: "sensorDetail" */ '../views/sensor/SensorDetail')
+  },
+  // 实时监测页面
+  {
+    path: '/sensor-home',
+    name: 'sensor-home',
+    component: () => import(/* webpackChunkName: "sensorDetail" */ '../views/sensor/SensorHome')
+  },
 ]
 
 const router = createRouter({
@@ -40,7 +57,10 @@ router.beforeEach(async (to, from, next) => {
   }
 
   try {
-    await axios.get("/user");
+    const response = await axios.get("/user");
+    if (!store.state.user) {
+      store.commit('changeUser', response?.data)
+    }
   } catch (error) {
     next({ name: 'login' })
     return;
