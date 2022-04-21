@@ -1,6 +1,7 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import axios from 'axios'
 import store from '@/store';
+import { API } from '@/App'
 
 const routes = [
   {
@@ -11,10 +12,24 @@ const routes = [
   {
     path: '/login',
     name: 'login',
-    component: () => import(/* webpackChunkName: "login" */ '../views/login/Login.vue'),
+    component: () => import(/* webpackChunkName: "login" */ '../views/login/Login'),
     beforeEnter: async (to, from, next) => {
       try {
-        await axios.get("/user");
+        await axios.get(API.user);
+        next({ name: 'home' })
+      } catch (error) {
+        next()
+      }
+    },
+  },
+  {
+    path: '/register',
+    name: 'register',
+    component: () => import(/* webpackChunkName: "register" */ '../views/Register/Register'),
+    beforeEnter: async (to, from, next) => {
+      // 和登录路由一样，如果已登录，就直接跳转到主页
+      try {
+        await axios.get(API.user);
         next({ name: 'home' })
       } catch (error) {
         next()
@@ -51,13 +66,13 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to, from, next) => {
-  if (to.name == 'login') {
+  if (to.name == 'login' || to.name == 'register') {
     next()
     return
   }
 
   try {
-    const response = await axios.get("/user");
+    const response = await axios.get(API.user);
     if (!store.state.user) {
       store.commit('changeUser', response?.data)
     }

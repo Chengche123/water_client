@@ -65,7 +65,7 @@ export default {
   },
   watch: {
     $route: function (val) {
-      if (val.name == "login") {
+      if (val.name == "login" || val.name == "register") {
         this.showNav = false;
         return;
       }
