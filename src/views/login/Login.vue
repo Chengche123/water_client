@@ -16,7 +16,7 @@
       style="z-index: 1"
     />
     <div class="col-md-10 mx-auto col-lg-5">
-      <form class="p-4 p-md-5 border rounded-3 bg-light">
+      <form class="p-4 p-md-5 border rounded-3 bg-light was-validated">
         <div class="form-floating mb-3">
           <input
             v-model="username"
@@ -24,8 +24,10 @@
             class="form-control"
             id="floatingInput"
             autocomplete="off"
+            required
           />
           <label class="text-info" for="floatingInput">账号</label>
+          <div class="invalid-feedback">账号不能为空</div>
         </div>
         <div class="form-floating mb-3">
           <input
@@ -34,8 +36,10 @@
             class="form-control"
             id="floatingPassword"
             autocomplete="off"
+            required
           />
           <label class="text-info" for="floatingPassword">密码</label>
+          <div class="invalid-feedback">密码不能为空</div>
         </div>
         <button @click="handleLogin" class="w-100 btn btn-lg btn-primary">
           登录
