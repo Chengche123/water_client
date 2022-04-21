@@ -1,5 +1,5 @@
 <template>
-  <tr style="cursor: pointer">
+  <tr style="cursor: pointer" @click="handleClick">
     <th scope="row">{{ index + 1 }}</th>
     <td>{{ sensorJson.code }}</td>
 
@@ -106,6 +106,13 @@ export default {
     parseUdatetime(udatetime) {
       const date = new Date(udatetime);
       return date.toLocaleString();
+    },
+    // 表格行处理点击事件
+    handleClick() {
+      this.$router.push({
+        name: "sensor-detail",
+        params: { sensorCode: this.sensorJson.code },
+      });
     },
   },
 };

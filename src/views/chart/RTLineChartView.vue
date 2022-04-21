@@ -11,17 +11,15 @@
 
 <script>
 import LineChart from "../../components/LineChart";
-import { CHART_COLORS, transparentize } from "../../utils/utils";
+import {
+  CHART_COLORS,
+  transparentize,
+  parseUdatetime,
+} from "../../utils/utils";
 import axios from "axios";
 
-function parseUdatetime(udatetime) {
-  const date = new Date(udatetime);
-  const datetime = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
-  return datetime;
-}
-
 export default {
-  name: "LineChartView",
+  name: "RTLineChartView",
   components: {
     LineChart,
   },
@@ -96,7 +94,7 @@ export default {
       labels: [],
       datasets: [
         {
-          label: "温度",
+          label: "",
           data: [],
           borderColor: CHART_COLORS.red,
           backgroundColor: transparentize(CHART_COLORS.red, 0.5),
@@ -107,7 +105,6 @@ export default {
         },
       ],
       chartOptions: {
-        animation: {},
         responsive: true,
         scales: {
           y: {

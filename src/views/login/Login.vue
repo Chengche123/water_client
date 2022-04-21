@@ -48,6 +48,7 @@
 <script>
 import axios from "axios";
 import ToastView from "../../components/Toast.vue";
+import { API } from "../../App";
 
 export default {
   name: "LoginView",
@@ -65,12 +66,13 @@ export default {
   methods: {
     async handleLogin() {
       try {
-        await axios.get("/users/login", {
+        const response = await axios.get(API.login, {
           auth: {
             username: this.username,
             password: this.password,
           },
         });
+        this.$store.commit("changeUser", response?.data);
         this.$router.push({ name: "home" });
       } catch (error) {
         this.toastParams.body = error.response.data.detail;

@@ -1,11 +1,20 @@
 <template>
-  <div class="container my-5">
-    <div class="row g-5">
+  <div class="container-fluid mt-2">
+    <div class="row align-items-center">
+      <!-- 数据实时更新 -->
       <div class="col-4">
-        <LineChartView
+        <RTLineChartView
           v-if="sensorCode"
           :sensorCode="sensorCode"
-          :dataPath="$store.state.hx2022Path"
+          :dataPath="API.hx2022"
+        />
+      </div>
+      <!-- 历史数据 -->
+      <div class="col-8">
+        <HistoryLineChartView
+          v-if="sensorCode"
+          :sensorCode="sensorCode"
+          :dataPath="API.hx2022"
         />
       </div>
     </div>
@@ -13,14 +22,17 @@
 </template>
 
 <script>
-import LineChartView from "../chart/LineChartView.vue";
+import RTLineChartView from "../chart/RTLineChartView.vue";
+import HistoryLineChartView from "../chart/HistoryLineChartView";
+import { API } from "../../App";
 
 export default {
   name: "SensorDetailView",
-  components: { LineChartView },
+  components: { RTLineChartView, HistoryLineChartView },
   data() {
     return {
-      sensorCode: null,
+      sensorCode: "",
+      API,
     };
   },
   mounted() {
