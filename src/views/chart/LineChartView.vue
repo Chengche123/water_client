@@ -3,10 +3,10 @@
     :labels="labels"
     :datasets="datasets"
     :chartOptions="chartOptions"
+    :width="192"
+    :height="108"
   />
-  <div class="text-center">
-    <!-- <button @click="handleClick">测试</button> -->
-  </div>
+  <div class="text-center"></div>
 </template>
 
 <script>
@@ -107,9 +107,7 @@ export default {
         },
       ],
       chartOptions: {
-        animation: {
-          duration: 0,
-        },
+        animation: {},
         responsive: true,
         scales: {
           y: {
@@ -121,6 +119,10 @@ export default {
               display: true,
               text: "",
             },
+            // 不显示网格
+            grid: {
+              display: false,
+            },
           },
           x: {
             title: {
@@ -128,16 +130,15 @@ export default {
               display: true,
               text: "时间 / 时:分:秒",
             },
+            // 不显示网格
+            grid: {
+              display: false,
+            },
           },
         },
       },
     };
   },
-  methods: {
-    handleClick() {
-      this.labels = this.labels.slice(1).concat("Foo");
-      this.datasets[0].data = this.datasets[0].data.slice(1).concat(20);
-    },
-  },
+  methods: {},
 };
 </script>
