@@ -78,7 +78,16 @@ export default {
       },
     };
   },
-  mounted() {},
+  mounted() {
+    // 获取账号和密码字段。填在输入框中
+    if (this.$route.params.username) {
+      this.username = this.$route.params.username;
+    }
+
+    if (this.$route.params.password) {
+      this.password = this.$route.params.password;
+    }
+  },
   methods: {
     async handleLogin() {
       if (!this.$refs.myForm.checkValidity()) {

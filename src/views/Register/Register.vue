@@ -169,7 +169,10 @@ export default {
         this.showToast_(
           "注册成功",
           () => {
-            this.$router.push({ name: "login" });
+            this.$router.push(
+              { name: "login" },
+              { username: this.username, password: this.password }
+            );
           },
           500
         );
