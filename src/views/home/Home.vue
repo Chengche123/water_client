@@ -38,8 +38,8 @@
           </li>
         </ul>
       </nav>
-
-      <div class="col-10 ms-auto px-4">
+      <!-- 不显示左侧导航栏时，撑开宽度 -->
+      <div class="px-4" :class="{ 'ms-auto': showNav, 'col-10': showNav }">
         <!-- 在切换导航栏后不重新刷新页面 -->
         <router-view v-slot="{ Component }">
           <!-- 只缓存一部分页面 -->

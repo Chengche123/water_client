@@ -1,21 +1,12 @@
 <template>
-  <div
-    class="
-      container-fluid
-      position-absolute
-      top-50
-      start-50
-      translate-middle
-      opacity-75
-    "
-  >
+  <div class="container-fluid opacity-75 mt-3">
     <ToastView
       class="position-absolute top-50 start-50 translate-middle"
       v-if="showToast"
       :="toastParams"
       style="z-index: 1"
     />
-    <div class="mx-auto col-4">
+    <div class="mx-auto col-5">
       <form
         class="p-4 border rounded-3 bg-light was-validated"
         @submit.prevent
