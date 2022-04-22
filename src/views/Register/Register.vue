@@ -96,6 +96,12 @@
         <button @click="handleRegister" class="mt-1 w-100 btn-lg btn-primary">
           注册
         </button>
+        <button
+          @click="$router.push({ name: 'login' })"
+          class="mt-2 w-100 btn-lg btn-secondary"
+        >
+          已有账号，去登陆
+        </button>
       </form>
     </div>
   </div>

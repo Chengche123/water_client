@@ -1,7 +1,7 @@
 <template>
   <div
     class="
-      container
+      container-fluid
       position-absolute
       top-50
       start-50
@@ -15,18 +15,23 @@
       :="toastParams"
       style="z-index: 1"
     />
-    <div class="col-md-10 mx-auto col-lg-5">
-      <form class="p-4 p-md-5 border rounded-3 bg-light was-validated">
+    <div class="mx-auto col-4">
+      <form
+        class="p-4 border rounded-3 bg-light was-validated"
+        @submit.prevent
+        ref="myForm"
+        novalidate
+      >
         <div class="form-floating mb-3">
           <input
             v-model="username"
             type="text"
             class="form-control"
-            id="floatingInput"
+            id="floatingUsername"
             autocomplete="off"
             required
           />
-          <label class="text-info" for="floatingInput">账号</label>
+          <label class="text-info" for="floatingUsername">账号</label>
           <div class="invalid-feedback">账号不能为空</div>
         </div>
         <div class="form-floating mb-3">
@@ -43,6 +48,12 @@
         </div>
         <button @click="handleLogin" class="w-100 btn btn-lg btn-primary">
           登录
+        </button>
+        <button
+          @click="$router.push({ name: 'register' })"
+          class="mt-2 w-100 btn btn-lg btn-secondary"
+        >
+          没有账号，去注册
         </button>
       </form>
     </div>
@@ -67,8 +78,13 @@ export default {
       },
     };
   },
+  mounted() {},
   methods: {
     async handleLogin() {
+      if (!this.$refs.myForm.checkValidity()) {
+        return;
+      }
+
       try {
         const response = await axios.get(API.login, {
           auth: {
