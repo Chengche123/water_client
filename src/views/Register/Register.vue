@@ -63,7 +63,9 @@
             >确认密码</label
           >
           <div class="invalid-feedback">
-            {{ $refs.confirmPasswordInput?.validationMessage }}
+            {{
+              $refs.confirmPasswordInput?.validationMessage || "两次密码不一致"
+            }}
           </div>
         </div>
         <div class="form-floating mb-1">
@@ -77,6 +79,19 @@
           />
           <label class="text-info" for="floatingEmail">邮箱</label>
           <div class="invalid-feedback">邮箱格式不正确</div>
+        </div>
+        <div class="form-floating mb-1">
+          <input
+            v-model="telephone"
+            type="text"
+            class="form-control"
+            id="floatingTelephone"
+            autocomplete="off"
+            required
+            pattern="^(?:(?:\+|00)86)?1(?:(?:3[\d])|(?:4[5-79])|(?:5[0-35-9])|(?:6[5-7])|(?:7[0-8])|(?:8[\d])|(?:9[189]))\d{8}$"
+          />
+          <label class="text-info" for="floatingTelephone">手机号</label>
+          <div class="invalid-feedback">请输入正确的手机号</div>
         </div>
         <button @click="handleRegister" class="mt-1 w-100 btn-lg btn-primary">
           注册
@@ -98,6 +113,7 @@ export default {
       password: "",
       confirmPassword: "",
       email: "",
+      telephone: "",
       showToast: false,
       toastParams: {
         body: "",
