@@ -66,9 +66,8 @@
             class="form-control"
             id="floatingEmail"
             autocomplete="off"
-            required
           />
-          <label class="text-info" for="floatingEmail">邮箱</label>
+          <label class="text-info" for="floatingEmail">邮箱（可选）</label>
           <div class="invalid-feedback">邮箱格式不正确</div>
         </div>
         <div class="form-floating mb-1">
@@ -78,10 +77,11 @@
             class="form-control"
             id="floatingTelephone"
             autocomplete="off"
-            required
             pattern="^(?:(?:\+|00)86)?1(?:(?:3[\d])|(?:4[5-79])|(?:5[0-35-9])|(?:6[5-7])|(?:7[0-8])|(?:8[\d])|(?:9[189]))\d{8}$"
           />
-          <label class="text-info" for="floatingTelephone">手机号</label>
+          <label class="text-info" for="floatingTelephone"
+            >手机号（可选）</label
+          >
           <div class="invalid-feedback">请输入正确的手机号</div>
         </div>
         <button @click="handleRegister" class="mt-1 w-100 btn-lg btn-primary">
@@ -99,7 +99,9 @@
 </template>
 
 <script>
+import axios from "axios";
 import ToastView from "../../components/Toast.vue";
+import { API } from "@/App.vue";
 
 export default {
   name: "LoginView",
@@ -138,12 +140,42 @@ export default {
     },
   },
   methods: {
+    showToast_(text, cbk, millisecond) {
+      if (!millisecond) {
+        millisecond = 2000;
+      }
+
+      this.toastParams.body = text;
+      this.showToast = true;
+      setTimeout(() => {
+        this.showToast = false;
+        if (cbk) {
+          cbk();
+        }
+      }, millisecond);
+    },
     async handleRegister() {
       if (!this.$refs.myForm.checkValidity()) {
         return;
       }
 
-      console.log("register");
+      try {
+        await axios.post(API.register, {
+          username: this.username,
+          password: this.password,
+          email: this.email,
+          telephone_number: this.telephone_number,
+        });
+        this.showToast_(
+          "注册成功",
+          () => {
+            this.$router.push({ name: "login" });
+          },
+          500
+        );
+      } catch (error) {
+        this.showToast_(error.response.data);
+      }
     },
   },
 };
