@@ -22,7 +22,7 @@
         ref="myForm"
         novalidate
       >
-        <div class="form-floating mb-3">
+        <div class="form-floating mb-1">
           <input
             v-model="username"
             type="text"
@@ -37,7 +37,7 @@
             4到16位（字母，数字，下划线，减号）
           </div>
         </div>
-        <div class="form-floating mb-3">
+        <div class="form-floating mb-1">
           <input
             v-model="password"
             type="password"
@@ -49,7 +49,7 @@
           <label class="text-info" for="floatingPassword">密码</label>
           <div class="invalid-feedback">密码不能为空</div>
         </div>
-        <div class="form-floating mb-3">
+        <div class="form-floating mb-1">
           <input
             v-model="confirmPassword"
             type="password"
@@ -66,7 +66,19 @@
             {{ $refs.confirmPasswordInput?.validationMessage }}
           </div>
         </div>
-        <button @click="handleRegister" class="w-100 btn btn-lg btn-primary">
+        <div class="form-floating mb-1">
+          <input
+            v-model="email"
+            type="email"
+            class="form-control"
+            id="floatingEmail"
+            autocomplete="off"
+            required
+          />
+          <label class="text-info" for="floatingEmail">邮箱</label>
+          <div class="invalid-feedback">邮箱格式不正确</div>
+        </div>
+        <button @click="handleRegister" class="mt-1 w-100 btn-lg btn-primary">
           注册
         </button>
       </form>
@@ -85,6 +97,7 @@ export default {
       username: "",
       password: "",
       confirmPassword: "",
+      email: "",
       showToast: false,
       toastParams: {
         body: "",
