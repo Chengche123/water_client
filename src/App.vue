@@ -15,6 +15,8 @@ export const API = {
   login: "/users/login",
   logout: "/users/logout",
   user: "/user",
+  // 末尾跟正斜线
+  register: "/users/",
 };
 
 const ws = new WebSocket("ws://localhost:8000/ws/hx2022-consumer/");
