@@ -106,3 +106,9 @@ const NAMED_COLORS = [
 export function namedColor(index) {
     return NAMED_COLORS[index % NAMED_COLORS.length];
 }
+
+export function parseUdatetime(udatetime) {
+    const date = new Date(udatetime);
+    const datetime = date.toLocaleString()
+    return datetime;
+}
