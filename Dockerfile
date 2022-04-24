@@ -7,8 +7,7 @@ copy . .
 
 RUN set -eux; \
     # 使用国内源
-	npm install -g nrm; \
-    nrm use taobao; \
+	npm config set registry https://registry.npmmirror.com/; \
     # 安装依赖包
     npm install --save;
 
