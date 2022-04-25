@@ -24,4 +24,6 @@ RUN npm run build
 # 最终镜像，使用 nginx 服务静态文件
 FROM nginx:stable-alpine
 
+EXPOSE 80
+
 COPY --from=builder /app/dist /usr/share/nginx/html
