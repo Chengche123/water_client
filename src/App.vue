@@ -22,6 +22,7 @@ export const API = {
   user: "/user",
   // 末尾跟正斜线
   register: "/users/",
+  alarmThreshold: "/alarm-threshold",
 };
 
 const ws = new WebSocket(

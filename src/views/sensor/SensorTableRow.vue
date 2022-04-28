@@ -1,12 +1,11 @@
 <template>
   <tr style="cursor: pointer" @click="handleClick">
     <th scope="row">{{ index + 1 }}</th>
-    <td>{{ sensorJson.code }}</td>
 
     <td class="text-center">
       <transition-group
-        enter-active-class="animate__animated animate__slideInLeft"
-        leave-active-class="animate__animated animate__fadeOut position-absolute"
+        enter-active-class="animate__animated animate__headShake"
+        leave-active-class="position-absolute opacity-0"
         move-class="items-move"
       >
         <span
@@ -21,8 +20,8 @@
 
     <td class="text-center">
       <transition-group
-        enter-active-class="animate__animated animate__slideInLeft"
-        leave-active-class="animate__animated animate__fadeOut position-absolute"
+        enter-active-class="animate__animated animate__headShake"
+        leave-active-class="position-absolute opacity-0"
         move-class="items-move"
       >
         <span
@@ -46,6 +45,47 @@
     <td v-else>
       断线 <span class="spinner-border spinner-border-sm text-secondary"></span>
     </td>
+    <td @click.stop>
+      <div class="row">
+        <div class="col-auto">
+          <input
+            class="form-control form-control-sm bg-transparent"
+            style="max-width: 5rem"
+            type="text"
+            v-model="thresholdValue"
+            :disabled="!enableThresholdInput"
+            ref="thresholdInput"
+          />
+        </div>
+        <div class="col-auto">
+          <button
+            @click="enableThresholdInput = !enableThresholdInput"
+            type="button"
+            class="btn btn-light btn-sm bg-transparent"
+          >
+            修改
+          </button>
+        </div>
+      </div>
+    </td>
+    <td @click.stop>
+      <div class="form-check form-switch">
+        <input class="form-check-input bg-transparent" type="checkbox" />
+        <label class="form-check-label">电话</label>
+      </div>
+    </td>
+    <td @click.stop>
+      <div class="form-check form-switch">
+        <input class="form-check-input bg-transparent" type="checkbox" />
+        <label class="form-check-label">短信</label>
+      </div>
+    </td>
+    <td @click.stop>
+      <div class="form-check form-switch">
+        <input class="form-check-input bg-transparent" type="checkbox" />
+        <label class="form-check-label">邮箱</label>
+      </div>
+    </td>
   </tr>
 </template>
 
@@ -55,6 +95,7 @@ import axios from "axios";
 export default {
   name: "SensorTableRowView",
   async mounted() {
+    // 查询最近一次数据
     const dataPath = this.$store.state.hx2022Path;
     const response = await axios.get(dataPath, {
       params: {
@@ -68,6 +109,12 @@ export default {
       return;
     }
     this.datas.push(item);
+
+    // 从父组件传来的告警信息中拿出属于该传感器的部分
+    // 类似 {id: 174, threshold_value: '1.19', method: 2, user: 1, sensor: 144}
+    this.myAlarmThreshold = this.alarmThreshold?.[this.sensorJson.autoid];
+    // 阈值
+    this.thresholdValue = this.myAlarmThreshold?.threshold_value;
   },
   props: {
     sensorJson: {
@@ -75,6 +122,10 @@ export default {
     },
     index: {
       type: Number,
+    },
+    // 告警信息
+    alarmThreshold: {
+      type: Object,
     },
   },
   data() {
@@ -85,6 +136,10 @@ export default {
       STATUS_ABNORMAL: 1,
       STATUS_DISCONNECTED: 2,
       STATUS: 2,
+      myAlarmThreshold: null,
+      thresholdValue: null,
+      // 阈值修改输入框
+      enableThresholdInput: false,
     };
   },
   watch: {
@@ -100,6 +155,14 @@ export default {
 
       this.STATUS = this.STATUS_RUNING;
       this.datas = [val];
+    },
+    // 聚焦阈值输入框
+    enableThresholdInput: function (val) {
+      if (val == true) {
+        setTimeout(() => {
+          this.$refs.thresholdInput.focus();
+        }, 50);
+      }
     },
   },
   methods: {

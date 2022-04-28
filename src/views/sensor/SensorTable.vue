@@ -14,15 +14,17 @@
       <thead>
         <tr>
           <th scope="col">序号</th>
-          <th scope="col">传感器编号</th>
-          <th scope="col">时间</th>
-          <th scope="col">监测值</th>
+          <th class="text-center" scope="col">时间</th>
+          <th class="text-center" scope="col">监测值</th>
           <th scope="col">地址</th>
           <th scope="col">测点类型</th>
           <th scope="col">监测状态</th>
+          <th scope="col">告警阈值</th>
+          <th colspan="3" class="text-center" scope="col">告警方式</th>
         </tr>
       </thead>
-      <tbody>
+      <!-- alarmThreshold 请求完成后再渲染表格 -->
+      <tbody v-if="alarmThreshold">
         <transition-group
           name="items"
           enter-active-class="animate__animated animate__fadeIn"
@@ -34,6 +36,7 @@
             <SensorTableRowView
               :sensorJson="sensorJson"
               :index="index"
+              :alarmThreshold="alarmThreshold"
               @changeStatusToRuning="handleChangeStatusToRuning"
             /> </template
         ></transition-group>
@@ -71,10 +74,32 @@ export default {
       .catch((error) => {
         console.log(error);
       });
+
+    // 获取用户告警信息
+    axios
+      .get(API.alarmThreshold, {
+        params: {
+          user: this.$store.state.user.id,
+          limit: 100,
+        },
+      })
+      .then((response) => {
+        const results = response.data.results;
+        // 将数组转换成哈希表便于查找
+        let alarmThreshold = Object();
+        for (let item of results) {
+          alarmThreshold[item.sensor] = item;
+        }
+        this.alarmThreshold = alarmThreshold;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   },
   data() {
     return {
       sensorJsons: [],
+      alarmThreshold: null,
     };
   },
   methods: {
