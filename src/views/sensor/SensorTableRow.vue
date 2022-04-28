@@ -140,6 +140,10 @@ export default {
       thresholdValue: null,
       // 阈值修改输入框
       enableThresholdInput: false,
+      // 传感器是否从断线到收到第一个消息
+      isStartReceive: false,
+      // 最后一次收到消息的时间
+      lastReceiveTime: null,
     };
   },
   watch: {
@@ -147,6 +151,24 @@ export default {
     "$store.state.hx2022MsgData": function (val) {
       if (!val || val.code != this.sensorJson.code) {
         return;
+      }
+
+      // 消息是发给该传感器的
+      this.lastReceiveTime = new Date();
+      // 传感器是否从断线到收到第一个消息
+      if (!this.isStartReceive) {
+        this.isStartReceive = true;
+        // 若持续 5 s 没收到消息，改为离线状态
+        const interval = setInterval(() => {
+          // 相减所得结果单位为毫秒
+          const elapse = new Date() - this.lastReceiveTime;
+          if (elapse > 5000) {
+            // 将传感器改为离线状态
+            this.STATUS = this.STATUS_DISCONNECTED;
+            this.isStartReceive = false;
+            clearInterval(interval);
+          }
+        }, 5000);
       }
 
       if (this.STATUS != this.STATUS_RUNING) {
