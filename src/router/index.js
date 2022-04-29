@@ -58,6 +58,11 @@ const routes = [
     name: 'sensor-home',
     component: () => import(/* webpackChunkName: "sensorDetail" */ '../views/sensor/SensorHome')
   },
+  {
+    path: '/admin-permission',
+    name: 'admin-permission',
+    component: () => import(/* webpackChunkName: "admin-permission" */ '../views/admin/Permission/Permission')
+  },
 ]
 
 const router = createRouter({

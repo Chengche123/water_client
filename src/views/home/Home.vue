@@ -26,6 +26,17 @@
               实时监测
             </router-link>
           </li>
+          <!-- 只有管理员才会显示该栏 -->
+          <li v-if="$store.state?.user?.is_superuser" class="nav-item">
+            <router-link
+              :to="{ name: 'admin-permission' }"
+              class="nav-link"
+              active-class="active"
+            >
+              <i class="iconfont icon">&#xe618;</i>
+              用户授权
+            </router-link>
+          </li>
           <li class="nav-item">
             <router-link
               :to="{ name: 'test' }"
