@@ -89,6 +89,13 @@ export default {
     }
   },
   methods: {
+    showToast_(text) {
+      this.toastParams.body = text;
+      this.showToast = true;
+      setTimeout(() => {
+        this.showToast = false;
+      }, 2000);
+    },
     async handleLogin() {
       if (!this.$refs.myForm.checkValidity()) {
         return;
@@ -104,11 +111,7 @@ export default {
         this.$store.commit("changeUser", response?.data);
         this.$router.push({ name: "home" });
       } catch (error) {
-        this.toastParams.body = error.response.data.detail;
-        this.showToast = true;
-        setTimeout(() => {
-          this.showToast = false;
-        }, 2000);
+        this.showToast_(error.response.data.detail);
       }
     },
   },
