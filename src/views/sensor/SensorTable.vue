@@ -25,7 +25,7 @@
         </tr>
       </thead>
       <!-- alarmThreshold 请求完成后再渲染表格 -->
-      <tbody v-if="alarmThreshold">
+      <tbody v-if="alarmThresholdMap">
         <transition-group
           name="items"
           enter-active-class="animate__animated animate__fadeIn"
@@ -37,7 +37,7 @@
             <SensorTableRowView
               :sensorJson="sensorJson"
               :index="index"
-              :alarmThreshold="alarmThreshold"
+              :alarmThresholdMap="alarmThresholdMap"
               @changeStatusToRuning="handleChangeStatusToRuning"
             /> </template
         ></transition-group>
@@ -64,7 +64,7 @@ export default {
     axios
       .get(API.sensors, {
         params: {
-          limit: 30,
+          limit: 10,
         },
       })
       .then((response) => {
@@ -87,11 +87,12 @@ export default {
       .then((response) => {
         const results = response.data.results;
         // 将数组转换成哈希表便于查找
-        let alarmThreshold = Object();
+        // sensor_id - json对象
+        let alarmThresholdMap = Object();
         for (let item of results) {
-          alarmThreshold[item.sensor] = item;
+          alarmThresholdMap[item.sensor_id] = item;
         }
-        this.alarmThreshold = alarmThreshold;
+        this.alarmThresholdMap = alarmThresholdMap;
       })
       .catch((error) => {
         console.log(error);
@@ -100,7 +101,7 @@ export default {
   data() {
     return {
       sensorJsons: [],
-      alarmThreshold: null,
+      alarmThresholdMap: null,
     };
   },
   methods: {
