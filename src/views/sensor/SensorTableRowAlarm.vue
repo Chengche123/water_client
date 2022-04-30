@@ -1,19 +1,22 @@
 <template>
   <td @click.stop>
     <div class="row">
-      <div class="col-auto">
+      <div class="col-auto was-validated">
         <input
           class="form-control form-control-sm bg-transparent"
-          style="max-width: 5rem"
+          style="max-width: 8rem"
           type="text"
           v-model="thresholdValue"
           :disabled="!enableThresholdInput"
           ref="thresholdInput"
+          placeholder="未设置"
+          required
+          pattern="(?:^[1-9]([0-9]+)?(?:\.[0-9]{1,2})?$)|(?:^(?:0)$)|(?:^[0-9]\.[0-9](?:[0-9])?$)"
         />
       </div>
       <div class="col-auto">
         <button
-          @click="enableThresholdInput = !enableThresholdInput"
+          @click="handleInputButtonClick"
           type="button"
           class="btn btn-light btn-sm"
           :class="{ 'bg-transparent': !enableThresholdInput }"
@@ -63,6 +66,14 @@ export default {
     if (this.alarmThresholdJson) {
       this.thresholdValue = this.alarmThresholdJson.threshold_value;
     }
+  },
+  methods: {
+    handleInputButtonClick() {
+      // 数据是否已经经过验证
+      if (this.$refs.thresholdInput.checkValidity()) {
+        this.enableThresholdInput = !this.enableThresholdInput;
+      }
+    },
   },
   watch: {
     // 聚焦阈值输入框
