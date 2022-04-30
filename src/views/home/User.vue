@@ -28,6 +28,10 @@ export default {
       // 先调用接口，然后直接跳转到登录页面
       try {
         await axios.get(API.logout);
+
+        // 销毁用户对象
+        this.$store.commit("changeUser", null);
+
         this.$router.push({ name: "login" });
       } catch (error) {
         console.log(error);

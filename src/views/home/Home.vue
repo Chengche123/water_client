@@ -54,7 +54,7 @@
         <!-- 在切换导航栏后不重新刷新页面 -->
         <router-view v-slot="{ Component }">
           <!-- 只缓存一部分页面 -->
-          <keep-alive :include="['SensorHomeView']">
+          <keep-alive :include="cachedComponents">
             <component :is="Component" />
           </keep-alive>
         </router-view>
@@ -76,6 +76,7 @@ export default {
   data() {
     return {
       showNav: true,
+      cachedComponents: [],
     };
   },
   watch: {
@@ -86,6 +87,14 @@ export default {
       }
 
       this.showNav = true;
+    },
+    "$store.state.user": function (val) {
+      // 用户退出后不再缓存组件
+      if (val == null) {
+        this.cachedComponents = [];
+      } else {
+        this.cachedComponents = ["SensorHomeView"];
+      }
     },
   },
 };
