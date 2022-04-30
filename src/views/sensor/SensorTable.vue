@@ -9,7 +9,8 @@
       "
     >
       <caption>
-        传感器列表
+        <i class="iconfont icon ms-1 me-2">&#xe8dd;</i
+        >传感器列表
       </caption>
       <thead>
         <tr>
@@ -116,4 +117,8 @@ export default {
 .items-move {
   transition: transform 3s ease;
 }
+</style>
+
+<style lang="scss" scoped>
+@import "@/style/utils.scss";
 </style>

@@ -71,7 +71,7 @@ export default {
   components: { UserView },
   mounted() {
     // 直接显示实时监测页面
-    this.$router.push({ name: "sensor-home" });
+    // this.$router.push({ name: "sensor-home" });
   },
   data() {
     return {
