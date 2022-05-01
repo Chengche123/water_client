@@ -27,20 +27,39 @@
     </div>
   </td>
   <td @click.stop>
+    <!-- 在没有设置告警阈值时不能设置告警方式 -->
     <div class="form-check form-switch">
-      <input class="form-check-input bg-transparent" type="checkbox" />
+      <input
+        class="form-check-input bg-transparent"
+        type="checkbox"
+        v-model="enableTelephoneMethod"
+        @change="onMethodChange"
+        :disabled="!thresholdValue"
+      />
       <label class="form-check-label">电话</label>
     </div>
   </td>
   <td @click.stop>
     <div class="form-check form-switch">
-      <input class="form-check-input bg-transparent" type="checkbox" />
+      <input
+        class="form-check-input bg-transparent"
+        type="checkbox"
+        v-model="enableMessageMethod"
+        @change="onMethodChange"
+        :disabled="!thresholdValue"
+      />
       <label class="form-check-label">短信</label>
     </div>
   </td>
   <td @click.stop>
     <div class="form-check form-switch">
-      <input class="form-check-input bg-transparent" type="checkbox" />
+      <input
+        class="form-check-input bg-transparent"
+        type="checkbox"
+        v-model="enableEmailMethod"
+        @change="onMethodChange"
+        :disabled="!thresholdValue"
+      />
       <label class="form-check-label">邮箱</label>
     </div>
   </td>
@@ -55,6 +74,10 @@ export default {
       // 阈值修改输入框使能
       enableThresholdInput: false,
       inputLable: "修改",
+      // 告警方法 model
+      enableTelephoneMethod: false,
+      enableMessageMethod: false,
+      enableEmailMethod: false,
     };
   },
   props: {
@@ -73,6 +96,9 @@ export default {
       if (this.$refs.thresholdInput.checkValidity()) {
         this.enableThresholdInput = !this.enableThresholdInput;
       }
+    },
+    onMethodChange(ev) {
+      console.log(ev.target.checked);
     },
   },
   watch: {
