@@ -85,10 +85,27 @@ export default {
       type: Object,
     },
   },
+  computed: {
+    // 通过 method 比特位计算最终值
+    method() {
+      let res = 0;
+      res |= this.enableTelephoneMethod ? 0x01 : 0;
+      res |= this.enableMessageMethod ? 0x02 : 0;
+      res |= this.enableEmailMethod ? 0x04 : 0;
+      return res;
+    },
+  },
   mounted() {
-    if (this.alarmThresholdJson) {
-      this.thresholdValue = this.alarmThresholdJson.threshold_value;
+    // 有些传感器并没有设置告警信息
+    if (!this.alarmThresholdJson) {
+      return;
     }
+    this.thresholdValue = this.alarmThresholdJson.threshold_value;
+    // 从 method 中根据比特位取出信息
+    const method = this.alarmThresholdJson.method;
+    this.enableTelephoneMethod = (method & 0x01) == 0x01;
+    this.enableMessageMethod = (method & 0x02) == 0x02;
+    this.enableEmailMethod = (method & 0x04) == 0x04;
   },
   methods: {
     handleInputButtonClick() {
@@ -97,8 +114,8 @@ export default {
         this.enableThresholdInput = !this.enableThresholdInput;
       }
     },
-    onMethodChange(ev) {
-      console.log(ev.target.checked);
+    onMethodChange() {
+      console.log(this.method);
     },
   },
   watch: {
