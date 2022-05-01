@@ -20,7 +20,7 @@
           <th scope="col">地址</th>
           <th scope="col">测点类型</th>
           <th scope="col">监测状态</th>
-          <th scope="col">告警阈值</th>
+          <th class="text-center" scope="col">告警阈值</th>
           <th colspan="3" class="text-center" scope="col">告警方式</th>
         </tr>
       </thead>
@@ -90,7 +90,7 @@ export default {
         // sensor_id - json对象
         let alarmThresholdMap = Object();
         for (let item of results) {
-          alarmThresholdMap[item.sensor_id] = item;
+          alarmThresholdMap[item.sensor] = item;
         }
         this.alarmThresholdMap = alarmThresholdMap;
       })

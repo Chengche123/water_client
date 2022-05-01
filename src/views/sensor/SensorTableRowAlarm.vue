@@ -1,18 +1,41 @@
 <template>
   <td @click.stop>
-    <div class="row">
+    <div class="row g-0 justify-content-around">
       <div class="col-auto was-validated">
-        <input
-          class="form-control form-control-sm bg-transparent"
-          style="max-width: 8rem"
-          type="text"
-          v-model="thresholdValue"
-          :disabled="!enableThresholdInput"
-          ref="thresholdInput"
-          placeholder="未设置"
-          required
-          pattern="(?:^[1-9]([0-9]+)?(?:\.[0-9]{1,2})?$)|(?:^(?:0)$)|(?:^[0-9]\.[0-9](?:[0-9])?$)"
-        />
+        <form ref="thresholdInput" class="input-group">
+          <!-- 阈值下限 -->
+          <span
+            class="input-group-text iconfont icon bg-transparent px-2"
+            style="font-size: 0.6rem"
+            >&#xe60a;</span
+          >
+          <input
+            class="form-control form-control-sm bg-transparent me-2"
+            style="max-width: 4rem"
+            type="text"
+            v-model="thresholdValueMin"
+            :disabled="!enableThresholdInput"
+            placeholder="未设置"
+            required
+            pattern="(?:^[1-9]([0-9]+)?(?:\.[0-9]{1,2})?$)|(?:^(?:0)$)|(?:^[0-9]\.[0-9](?:[0-9])?$)"
+          />
+          <!-- 阈值上限 -->
+          <span
+            class="input-group-text iconfont icon bg-transparent px-2"
+            style="font-size: 0.6rem"
+            >&#xe60c;</span
+          >
+          <input
+            class="form-control form-control-sm bg-transparent"
+            style="max-width: 4rem"
+            type="text"
+            v-model="thresholdValueMax"
+            :disabled="!enableThresholdInput"
+            placeholder="未设置"
+            required
+            pattern="(?:^[1-9]([0-9]+)?(?:\.[0-9]{1,2})?$)|(?:^(?:0)$)|(?:^[0-9]\.[0-9](?:[0-9])?$)"
+          />
+        </form>
       </div>
       <div class="col-auto">
         <button
@@ -34,7 +57,7 @@
         type="checkbox"
         v-model="enableTelephoneMethod"
         @change="onMethodChange"
-        :disabled="!thresholdValue"
+        :disabled="!thresholdValueMax || !thresholdValueMin"
       />
       <label class="form-check-label">电话</label>
     </div>
@@ -46,7 +69,7 @@
         type="checkbox"
         v-model="enableMessageMethod"
         @change="onMethodChange"
-        :disabled="!thresholdValue"
+        :disabled="!thresholdValueMax || !thresholdValueMin"
       />
       <label class="form-check-label">短信</label>
     </div>
@@ -58,7 +81,7 @@
         type="checkbox"
         v-model="enableEmailMethod"
         @change="onMethodChange"
-        :disabled="!thresholdValue"
+        :disabled="!thresholdValueMax || !thresholdValueMin"
       />
       <label class="form-check-label">邮箱</label>
     </div>
@@ -70,7 +93,8 @@ export default {
   name: "SensorTableRowAlarmView",
   data() {
     return {
-      thresholdValue: null,
+      thresholdValueMax: null,
+      thresholdValueMin: null,
       // 阈值修改输入框使能
       enableThresholdInput: false,
       inputLable: "修改",
@@ -100,7 +124,8 @@ export default {
     if (!this.alarmThresholdJson) {
       return;
     }
-    this.thresholdValue = this.alarmThresholdJson.threshold_value;
+    this.thresholdValueMin = this.alarmThresholdJson.threshold_value_min;
+    this.thresholdValueMax = this.alarmThresholdJson.threshold_value_max;
     // 从 method 中根据比特位取出信息
     const method = this.alarmThresholdJson.method;
     this.enableTelephoneMethod = (method & 0x01) == 0x01;
@@ -135,3 +160,7 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+@import "@/style/utils.scss";
+</style>
