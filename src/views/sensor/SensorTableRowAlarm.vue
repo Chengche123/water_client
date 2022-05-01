@@ -11,7 +11,7 @@
           >
           <input
             class="form-control form-control-sm bg-transparent me-2"
-            style="max-width: 4rem"
+            style="max-width: 6rem"
             type="text"
             v-model="thresholdValueMin"
             :disabled="!enableThresholdInput"
@@ -27,7 +27,7 @@
           >
           <input
             class="form-control form-control-sm bg-transparent"
-            style="max-width: 4rem"
+            style="max-width: 6rem"
             type="text"
             v-model="thresholdValueMax"
             :disabled="!enableThresholdInput"
@@ -59,7 +59,6 @@
         @change="onMethodChange"
         :disabled="!thresholdValueMax || !thresholdValueMin"
       />
-      <label class="form-check-label">电话</label>
     </div>
   </td>
   <td @click.stop>
@@ -71,7 +70,6 @@
         @change="onMethodChange"
         :disabled="!thresholdValueMax || !thresholdValueMin"
       />
-      <label class="form-check-label">短信</label>
     </div>
   </td>
   <td @click.stop>
@@ -83,7 +81,6 @@
         @change="onMethodChange"
         :disabled="!thresholdValueMax || !thresholdValueMin"
       />
-      <label class="form-check-label">邮箱</label>
     </div>
   </td>
 </template>

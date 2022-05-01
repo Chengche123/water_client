@@ -14,14 +14,20 @@
       </caption>
       <thead>
         <tr>
-          <th scope="col">序号</th>
-          <th class="text-center" scope="col">时间</th>
-          <th class="text-center" scope="col">监测值</th>
-          <th scope="col">地址</th>
-          <th scope="col">测点类型</th>
-          <th scope="col">监测状态</th>
-          <th class="text-center" scope="col">告警阈值</th>
-          <th colspan="3" class="text-center" scope="col">告警方式</th>
+          <!-- scope 属性在普通的 Web 浏览器中没有视觉效果，但可以通过屏幕阅读器使用。 -->
+          <th class="text-center align-middle" rowspan="2">序号</th>
+          <th class="text-center align-middle" rowspan="2">时间</th>
+          <th class="text-center align-middle" rowspan="2">监测值</th>
+          <th class="text-center align-middle" rowspan="2">地址</th>
+          <th class="text-center align-middle" rowspan="2">测点类型</th>
+          <th class="text-center align-middle" rowspan="2">监测状态</th>
+          <th class="text-center align-middle" rowspan="2">告警阈值</th>
+          <th class="text-center align-middle" colspan="3">告警方式</th>
+        </tr>
+        <tr>
+          <th>电话</th>
+          <th>短信</th>
+          <th>邮箱</th>
         </tr>
       </thead>
       <!-- alarmThreshold 请求完成后再渲染表格 -->
