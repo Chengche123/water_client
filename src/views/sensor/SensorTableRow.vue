@@ -36,10 +36,10 @@
 
     <td>{{ sensorJson.address }}</td>
     <td>{{ sensorJson.sensortypename }}</td>
-    <td v-if="STATUS == STATUS_RUNING">
+    <td v-if="STATUS == STATUS_ENUM.STATUS_RUNING">
       正常 <span class="spinner-grow spinner-grow-sm text-success"></span>
     </td>
-    <td v-else-if="STATUS == STATUS_ABNORMAL">
+    <td v-else-if="STATUS == STATUS_ENUM.STATUS_ABNORMAL">
       异常 <span class="spinner-grow spinner-grow-sm text-danger"></span>
     </td>
     <td v-else>
@@ -48,6 +48,8 @@
     <SensorTableRowAlarmView
       :alarmThresholdJson="alarmThresholdMap[sensorJson.autoid]"
       :sensorJson="sensorJson"
+      :wsMsg="wsMsg"
+      @changeStatus="handleChangeStatus"
     />
   </tr>
 </template>
@@ -55,6 +57,12 @@
 <script>
 import axios from "axios";
 import SensorTableRowAlarmView from "./SensorTableRowAlarm";
+
+export const STATUS_ENUM = {
+  STATUS_RUNING: 0,
+  STATUS_ABNORMAL: 1,
+  STATUS_DISCONNECTED: 2,
+};
 
 export default {
   name: "SensorTableRowView",
@@ -74,12 +82,6 @@ export default {
       return;
     }
     this.datas.push(item);
-
-    // // 从父组件传来的告警信息中拿出属于该传感器的部分
-    // // 类似 {id: 174, threshold_value: '1.19', method: 2, user: 1, sensor: 144}
-    // this.myAlarmThreshold = this.alarmThreshold?.[this.sensorJson.autoid];
-    // // 阈值
-    // this.thresholdValue = this.myAlarmThreshold?.threshold_value;
   },
   props: {
     sensorJson: {
@@ -97,14 +99,14 @@ export default {
     return {
       datas: [],
       dateTime: "",
-      STATUS_RUNING: 0,
-      STATUS_ABNORMAL: 1,
-      STATUS_DISCONNECTED: 2,
-      STATUS: 2,
+      STATUS_ENUM,
+      STATUS: STATUS_ENUM.STATUS_DISCONNECTED,
       // 传感器是否从断线到收到第一个消息
       isStartReceive: false,
       // 最后一次收到消息的时间
       lastReceiveTime: null,
+      // ws message
+      wsMsg: null,
     };
   },
   watch: {
@@ -113,6 +115,9 @@ export default {
       if (!val || val.code != this.sensorJson.code) {
         return;
       }
+
+      // 保存收到的消息，传递给子组件
+      this.wsMsg = val;
 
       // 消息是发给该传感器的
       this.lastReceiveTime = new Date();
@@ -125,18 +130,23 @@ export default {
           const elapse = new Date() - this.lastReceiveTime;
           if (elapse > 5000) {
             // 将传感器改为离线状态
-            this.STATUS = this.STATUS_DISCONNECTED;
+            this.STATUS = this.STATUS_ENUM.STATUS_DISCONNECTED;
             this.isStartReceive = false;
             clearInterval(interval);
           }
         }, 5000);
       }
 
-      if (this.STATUS != this.STATUS_RUNING) {
+      // 如果从断线到收到消息
+      if (this.STATUS == this.STATUS_ENUM.STATUS_DISCONNECTED) {
+        // 让父组件将该行移到前排
         this.$emit("changeStatusToRuning", this.index);
       }
 
-      this.STATUS = this.STATUS_RUNING;
+      // !!!
+      // 这里不再改变该组件的状态，让告警子组件去做
+      // 因为不知道数据是正常还是异常
+
       this.datas = [val];
     },
   },
@@ -151,6 +161,18 @@ export default {
         name: "sensor-detail",
         params: { sensorCode: this.sensorJson.code },
       });
+    },
+    // 处理来自告警子组件的事件
+    handleChangeStatus(status) {
+      // 告警子组件能改变的状态只能有 '正常' 和 '异常'
+      if (
+        status != STATUS_ENUM.STATUS_RUNING &&
+        status != STATUS_ENUM.STATUS_ABNORMAL
+      ) {
+        console.log(`error! status:${status}`);
+        return;
+      }
+      this.STATUS = status;
     },
   },
 };

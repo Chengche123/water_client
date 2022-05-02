@@ -89,6 +89,7 @@
 import axios from "axios";
 import { API } from "@/App";
 import { urljoins } from "urljoins";
+import { STATUS_ENUM } from "./SensorTableRow";
 
 export default {
   name: "SensorTableRowAlarmView",
@@ -96,6 +97,9 @@ export default {
     return {
       thresholdValueMax: null,
       thresholdValueMin: null,
+      // 验证过的数据
+      validatedThresholdValueMax: null,
+      validatedThresholdValueMin: null,
       // 阈值修改输入框使能
       enableThresholdInput: false,
       inputLable: "修改",
@@ -118,7 +122,12 @@ export default {
       type: Object,
       required: true,
     },
+    // 接收到的传感器实时消息
+    wsMsg: {
+      type: Object,
+    },
   },
+  emits: ["changeStatus"],
   computed: {
     // 通过 method 比特位计算最终值
     method() {
@@ -140,6 +149,9 @@ export default {
     // 取出阈值范围
     this.thresholdValueMin = this.alarmThresholdJson.threshold_value_min;
     this.thresholdValueMax = this.alarmThresholdJson.threshold_value_max;
+    // 从接口返回的数据，一定是已经经过验证的
+    this.validatedThresholdValueMax = this.thresholdValueMax;
+    this.validatedThresholdValueMin = this.thresholdValueMin;
     // 从 method 中根据比特位取出信息
     const method = this.alarmThresholdJson.method;
     this.enableTelephoneMethod = (method & 0x01) == 0x01;
@@ -157,6 +169,9 @@ export default {
       if (!this.$refs.thresholdInput.checkValidity()) {
         return;
       }
+      // 保存验证过的数据
+      this.validatedThresholdValueMin = this.thresholdValueMin;
+      this.validatedThresholdValueMax = this.thresholdValueMax;
       // 创建一条新记录
       if (!this.isThresholdValid) {
         axios
@@ -221,6 +236,24 @@ export default {
       } else {
         // 除能之后 lable 变为 '修改'
         this.inputLable = "修改";
+      }
+    },
+    // 传感器消息，用于判断是否超过阈值
+    wsMsg: function (val) {
+      const value = val.value;
+      // 卫戍，还没有设置阈值
+      if (
+        !this.validatedThresholdValueMin ||
+        !this.validatedThresholdValueMax
+      ) {
+        return;
+      }
+      const thresholdValueMin = parseFloat(this.validatedThresholdValueMin);
+      const thresholdValueMax = parseFloat(this.validatedThresholdValueMax);
+      if (value <= thresholdValueMin || value >= thresholdValueMax) {
+        this.$emit("changeStatus", STATUS_ENUM.STATUS_ABNORMAL);
+      } else {
+        this.$emit("changeStatus", STATUS_ENUM.STATUS_RUNING);
       }
     },
   },

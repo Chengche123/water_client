@@ -70,7 +70,7 @@ export default {
     axios
       .get(API.sensors, {
         params: {
-          limit: 30,
+          limit: 10,
         },
       })
       .then((response) => {
@@ -112,9 +112,9 @@ export default {
   },
   methods: {
     handleChangeStatusToRuning(index) {
-      setTimeout(() => {
-        arraymove(this.sensorJsons, index, 0);
-      }, 1000);
+      // setTimeout(() => {
+      arraymove(this.sensorJsons, index, 0);
+      // }, 1000);
     },
   },
 };
