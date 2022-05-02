@@ -88,6 +88,7 @@
 <script>
 import axios from "axios";
 import { API } from "@/App";
+import { urljoins } from "urljoins";
 
 export default {
   name: "SensorTableRowAlarmView",
@@ -104,6 +105,8 @@ export default {
       enableEmailMethod: false,
       // 阈值是否有效，用于使能告警方式选择
       isThresholdValid: false,
+      // 告警记录 资源 id ，用于 RESTFul
+      resourceId: null,
     };
   },
   props: {
@@ -118,13 +121,12 @@ export default {
   },
   computed: {
     // 通过 method 比特位计算最终值
-    requestData() {
+    method() {
       let method = 0;
-      let { thresholdValueMin, thresholdValueMax } = this;
       method |= this.enableTelephoneMethod ? 0x01 : 0;
       method |= this.enableMessageMethod ? 0x02 : 0;
       method |= this.enableEmailMethod ? 0x04 : 0;
-      return { method, thresholdValueMin, thresholdValueMax };
+      return method;
     },
   },
   mounted() {
@@ -132,6 +134,7 @@ export default {
     if (!this.alarmThresholdJson) {
       return;
     }
+    this.resourceId = this.alarmThresholdJson.id;
     // 具有告警信息，直接使能告警方式选择框
     this.isThresholdValid = true;
     // 取出阈值范围
@@ -164,9 +167,27 @@ export default {
             sensor: this.sensorJson.autoid,
           })
           .then((response) => {
-            console.log(response.data);
             // 记录创建成功
             this.isThresholdValid = true;
+            // 除能阈值输入框
+            this.enableThresholdInput = false;
+            // 保存记录 id
+            this.resourceId = response.data.id;
+          })
+          .catch((error) => {
+            console.log(error.response.data);
+          });
+      }
+      // 已有记录，更新数据
+      else {
+        const URI = urljoins(API.alarmThreshold, `${this.resourceId}/`);
+        axios
+          .patch(URI, {
+            threshold_value_max: this.thresholdValueMax,
+            threshold_value_min: this.thresholdValueMin,
+          })
+          .then(() => {
+            // 除能阈值输入框
             this.enableThresholdInput = false;
           })
           .catch((error) => {
