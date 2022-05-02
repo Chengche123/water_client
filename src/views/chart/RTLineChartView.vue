@@ -125,7 +125,7 @@ export default {
             title: {
               color: "black",
               display: true,
-              text: "时间 / 时:分:秒",
+              text: "时间",
             },
             // 不显示网格
             grid: {

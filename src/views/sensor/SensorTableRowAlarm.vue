@@ -196,7 +196,17 @@ export default {
       }
     },
     onMethodChange() {
-      // console.log(this.requestData);
+      // 不需要做验证，直接发送 PATCH 请求就行
+      // 因为只有在已经创建了告警阈值的情况下才能更改告警方式
+      const URI = urljoins(API.alarmThreshold, `${this.resourceId}/`);
+      axios
+        .patch(URI, {
+          method: this.method,
+        })
+        .then(() => {})
+        .catch((error) => {
+          console.log(error.response.data);
+        });
     },
   },
   watch: {
