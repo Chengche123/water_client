@@ -57,7 +57,7 @@
         type="checkbox"
         v-model="enableTelephoneMethod"
         @change="onMethodChange"
-        :disabled="!thresholdValueMax || !thresholdValueMin"
+        :disabled="!isThresholdValid"
       />
     </div>
   </td>
@@ -68,7 +68,7 @@
         type="checkbox"
         v-model="enableMessageMethod"
         @change="onMethodChange"
-        :disabled="!thresholdValueMax || !thresholdValueMin"
+        :disabled="!isThresholdValid"
       />
     </div>
   </td>
@@ -79,7 +79,7 @@
         type="checkbox"
         v-model="enableEmailMethod"
         @change="onMethodChange"
-        :disabled="!thresholdValueMax || !thresholdValueMin"
+        :disabled="!isThresholdValid"
       />
     </div>
   </td>
@@ -99,6 +99,8 @@ export default {
       enableTelephoneMethod: false,
       enableMessageMethod: false,
       enableEmailMethod: false,
+      // 阈值是否有效，用于使能告警方式选择
+      isThresholdValid: false,
     };
   },
   props: {
@@ -108,12 +110,13 @@ export default {
   },
   computed: {
     // 通过 method 比特位计算最终值
-    method() {
-      let res = 0;
-      res |= this.enableTelephoneMethod ? 0x01 : 0;
-      res |= this.enableMessageMethod ? 0x02 : 0;
-      res |= this.enableEmailMethod ? 0x04 : 0;
-      return res;
+    requestData() {
+      let method = 0;
+      let { thresholdValueMin, thresholdValueMax } = this;
+      method |= this.enableTelephoneMethod ? 0x01 : 0;
+      method |= this.enableMessageMethod ? 0x02 : 0;
+      method |= this.enableEmailMethod ? 0x04 : 0;
+      return { method, thresholdValueMin, thresholdValueMax };
     },
   },
   mounted() {
@@ -121,6 +124,9 @@ export default {
     if (!this.alarmThresholdJson) {
       return;
     }
+    // 具有告警信息，直接使能告警方式选择框
+    this.isThresholdValid = true;
+    // 取出阈值范围
     this.thresholdValueMin = this.alarmThresholdJson.threshold_value_min;
     this.thresholdValueMax = this.alarmThresholdJson.threshold_value_max;
     // 从 method 中根据比特位取出信息
@@ -131,13 +137,20 @@ export default {
   },
   methods: {
     handleInputButtonClick() {
-      // 数据是否已经经过验证
-      if (this.$refs.thresholdInput.checkValidity()) {
-        this.enableThresholdInput = !this.enableThresholdInput;
+      // 如果还没有输入数据，就不需要验证
+      if (!this.enableThresholdInput) {
+        this.enableThresholdInput = true;
+        return;
       }
+      // 验证数据，卫戍
+      if (!this.$refs.thresholdInput.checkValidity()) {
+        return;
+      }
+      this.isThresholdValid = true;
+      this.enableThresholdInput = false;
     },
     onMethodChange() {
-      console.log(this.method);
+      // console.log(this.requestData);
     },
   },
   watch: {
