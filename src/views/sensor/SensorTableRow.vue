@@ -47,6 +47,7 @@
     </td>
     <SensorTableRowAlarmView
       :alarmThresholdJson="alarmThresholdMap[sensorJson.autoid]"
+      :sensorJson="sensorJson"
     />
   </tr>
 </template>

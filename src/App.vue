@@ -22,7 +22,7 @@ export const API = {
   user: "/user",
   // 末尾跟正斜线
   register: "/users/",
-  alarmThreshold: "/alarm-threshold",
+  alarmThreshold: "/alarm-threshold/",
   users: "/users",
 };
 

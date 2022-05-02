@@ -86,6 +86,9 @@
 </template>
 
 <script>
+import axios from "axios";
+import { API } from "@/App";
+
 export default {
   name: "SensorTableRowAlarmView",
   data() {
@@ -104,8 +107,13 @@ export default {
     };
   },
   props: {
+    // 如果该传感器没有告警信息，那么父组件就不会传该对象
     alarmThresholdJson: {
       type: Object,
+    },
+    sensorJson: {
+      type: Object,
+      required: true,
     },
   },
   computed: {
@@ -146,8 +154,25 @@ export default {
       if (!this.$refs.thresholdInput.checkValidity()) {
         return;
       }
-      this.isThresholdValid = true;
-      this.enableThresholdInput = false;
+      // 创建一条新记录
+      if (!this.isThresholdValid) {
+        axios
+          .post(API.alarmThreshold, {
+            threshold_value_max: this.thresholdValueMax,
+            threshold_value_min: this.thresholdValueMin,
+            user: this.$store.state.user.id,
+            sensor: this.sensorJson.autoid,
+          })
+          .then((response) => {
+            console.log(response.data);
+            // 记录创建成功
+            this.isThresholdValid = true;
+            this.enableThresholdInput = false;
+          })
+          .catch((error) => {
+            console.log(error.response.data);
+          });
+      }
     },
     onMethodChange() {
       // console.log(this.requestData);
