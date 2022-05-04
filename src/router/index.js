@@ -48,7 +48,7 @@ const routes = [
   },
   { path: '/:pathMatch(.*)*', name: 'NotFound', redirect: { name: 'home' } },
   {
-    path: '/sensor-detail',
+    path: '/sensor-detail/:sensorCode',
     name: 'sensor-detail',
     component: () => import(/* webpackChunkName: "sensorDetail" */ '../views/sensor/SensorDetail')
   },

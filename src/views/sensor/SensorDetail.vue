@@ -19,24 +19,42 @@
       </div>
     </div>
   </div>
+  <div class="container-fluid">
+    <SensorDetailAlarmTable v-if="sensorJson" :sensorJson="sensorJson" />
+  </div>
 </template>
 
 <script>
 import RTLineChartView from "../chart/RTLineChartView.vue";
 import HistoryLineChartView from "../chart/HistoryLineChartView";
+import SensorDetailAlarmTable from "./SensorDetailAlarmTable";
 import { API } from "../../App";
+import axios from "axios";
 
 export default {
   name: "SensorDetailView",
-  components: { RTLineChartView, HistoryLineChartView },
+  components: { RTLineChartView, HistoryLineChartView, SensorDetailAlarmTable },
   data() {
     return {
       sensorCode: "",
+      sensorJson: null,
       API,
     };
   },
-  mounted() {
+  async mounted() {
     this.sensorCode = this.$route.params.sensorCode;
+
+    // 获取该传感器的其他信息
+    try {
+      const response = await axios.get(API.sensors, {
+        params: {
+          code: this.sensorCode,
+        },
+      });
+      this.sensorJson = response.data.results[0];
+    } catch (error) {
+      console.log(error.response.data);
+    }
   },
 };
 </script>

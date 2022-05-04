@@ -70,7 +70,7 @@ export default {
     axios
       .get(API.sensors, {
         params: {
-          limit: 10,
+          limit: 30,
         },
       })
       .then((response) => {

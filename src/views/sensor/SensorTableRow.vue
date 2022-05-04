@@ -159,7 +159,9 @@ export default {
     handleClick() {
       this.$router.push({
         name: "sensor-detail",
-        params: { sensorCode: this.sensorJson.code },
+        params: {
+          sensorCode: this.sensorJson.code,
+        },
       });
     },
     // 处理来自告警子组件的事件
