@@ -3,7 +3,8 @@
     <div class="col-auto">从</div>
     <div class="col-auto">
       <input
-        class="bg-transparent me-3"
+        class="bg-transparent me-3 animate__animated"
+        :class="{ animate__headShake: animateDatetimeAfter }"
         v-model="datetime_after"
         type="datetime-local"
       />
@@ -11,7 +12,8 @@
     <div class="col-auto">到</div>
     <div class="col-auto">
       <input
-        class="bg-transparent ms-3"
+        class="bg-transparent ms-3 animate__animated"
+        :class="{ animate__headShake: animateDatetimeBefore }"
         v-model="datetime_before"
         type="datetime-local"
       />
@@ -25,12 +27,14 @@
       </button>
     </div>
   </div>
+  <!-- 使用改变 key 的方便重建组件 -->
   <LineChart
     :datasets="datasets"
     :labels="labels"
     :chartOptions="chartOptions"
     :width="192"
     :height="108"
+    :key="lineChartKey"
   />
 </template>
 
@@ -125,7 +129,9 @@ export default {
       },
       datetime_after: null,
       datetime_before: null,
-      console,
+      animateDatetimeAfter: false,
+      animateDatetimeBefore: false,
+      lineChartKey: 1,
     };
   },
   async mounted() {
@@ -150,7 +156,18 @@ export default {
   methods: {
     async validateDatetimeField() {
       // 对所选时间段进行验证
-      if (!this.datetime_after || !this.datetime_before) {
+      if (!this.datetime_after) {
+        this.animateDatetimeAfter = false;
+        setTimeout(() => {
+          this.animateDatetimeAfter = true;
+        }, 100);
+        return;
+      }
+      if (!this.datetime_before) {
+        this.animateDatetimeBefore = false;
+        setTimeout(() => {
+          this.animateDatetimeBefore = true;
+        }, 100);
         return;
       }
       try {
@@ -174,6 +191,8 @@ export default {
       }
     },
     processResults(results) {
+      // 每次数据改变时重建组件
+      this.lineChartKey += 1;
       const labels = [];
       const data = [];
       // 前面的数据是最新的，所以倒序
