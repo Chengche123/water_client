@@ -1,4 +1,30 @@
 <template>
+  <div class="row my-3 justify-content-center">
+    <div class="col-auto">从</div>
+    <div class="col-auto">
+      <input
+        class="bg-transparent me-3"
+        v-model="datetime_after"
+        type="datetime-local"
+      />
+    </div>
+    <div class="col-auto">到</div>
+    <div class="col-auto">
+      <input
+        class="bg-transparent ms-3"
+        v-model="datetime_before"
+        type="datetime-local"
+      />
+    </div>
+    <div class="col-auto">
+      <button
+        @click="validateDatetimeField"
+        class="btn btn-primary btn-sm bg-transparent text-dark"
+      >
+        应用
+      </button>
+    </div>
+  </div>
   <LineChart
     :datasets="datasets"
     :labels="labels"
@@ -97,6 +123,9 @@ export default {
           },
         },
       },
+      datetime_after: null,
+      datetime_before: null,
+      console,
     };
   },
   async mounted() {
@@ -113,6 +142,38 @@ export default {
       if (!results) {
         return;
       }
+      this.processResults(results);
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  methods: {
+    async validateDatetimeField() {
+      // 对所选时间段进行验证
+      if (!this.datetime_after || !this.datetime_before) {
+        return;
+      }
+      try {
+        const response = await axios.get(this.dataPath, {
+          params: {
+            code: this.sensorCode,
+            limit: 100,
+            offset: 0,
+            udatetime_after: this.datetime_after
+              ? new Date(this.datetime_after).toISOString()
+              : null,
+            udatetime_before: this.datetime_before
+              ? new Date(this.datetime_before).toISOString()
+              : null,
+          },
+        });
+        const results = response.data.results;
+        this.processResults(results);
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    processResults(results) {
       const labels = [];
       const data = [];
       // 前面的数据是最新的，所以倒序
@@ -123,9 +184,7 @@ export default {
       }
       this.labels = labels;
       this.datasets[0].data = data;
-    } catch (error) {
-      console.log(error);
-    }
+    },
   },
 };
 </script>
