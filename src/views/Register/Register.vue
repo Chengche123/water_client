@@ -164,7 +164,9 @@ export default {
           username: this.username,
           password: this.password,
           email: this.email,
-          telephone_number: this.telephone_number,
+          extend: {
+            telephone_number: this.telephone,
+          },
         });
         this.showToast_(
           "注册成功",
