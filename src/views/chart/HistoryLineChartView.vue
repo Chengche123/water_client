@@ -23,7 +23,13 @@
         @click="validateDatetimeField"
         class="btn btn-primary btn-sm bg-transparent text-dark"
       >
-        应用
+        查询
+      </button>
+      <button
+        @click="handleExport"
+        class="btn btn-primary btn-sm bg-transparent text-dark ms-2"
+      >
+        导出
       </button>
     </div>
   </div>
@@ -42,6 +48,7 @@
 import LineChart from "../../components/LineChart";
 import { CHART_COLORS, parseUdatetime } from "../../utils/utils";
 import axios from "axios";
+import { utils, writeFile } from "xlsx";
 
 const duration = 10;
 
@@ -132,6 +139,7 @@ export default {
       animateDatetimeAfter: false,
       animateDatetimeBefore: false,
       lineChartKey: 1,
+      results: [],
     };
   },
   async mounted() {
@@ -197,12 +205,20 @@ export default {
       const data = [];
       // 前面的数据是最新的，所以倒序
       results.reverse();
+      // 保存 json 数据，用于导出
+      this.results = results;
       for (let item of results) {
         labels.push(parseUdatetime(item.udatetime));
         data.push(item.value);
       }
       this.labels = labels;
       this.datasets[0].data = data;
+    },
+    handleExport() {
+      const wb = utils.book_new();
+      const ws = utils.json_to_sheet(this.results);
+      utils.book_append_sheet(wb, ws);
+      writeFile(wb, "data.xlsx");
     },
   },
 };
