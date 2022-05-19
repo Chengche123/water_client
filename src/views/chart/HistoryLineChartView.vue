@@ -7,6 +7,7 @@
     :width="800"
     :height="200"
     :key="lineChartKey"
+    ref="historyChart"
   />
   <div class="row my-3 justify-content-center">
     <div class="col-auto">从</div>
@@ -35,10 +36,16 @@
         查询
       </button>
       <button
-        @click="handleExport"
+        @click="handleExportExcel"
         class="btn btn-primary btn-sm bg-transparent text-dark ms-2"
       >
-        导出
+        导出 Excel
+      </button>
+      <button
+        @click="handleExportImage"
+        class="btn btn-primary btn-sm bg-transparent text-dark ms-2"
+      >
+        导出图像
       </button>
     </div>
   </div>
@@ -50,9 +57,7 @@ import { CHART_COLORS, parseUdatetime } from "../../utils/utils";
 import axios from "axios";
 import { utils, writeFile } from "xlsx";
 
-// 动画总共支持 3000 毫秒
-const DURATION = 3000;
-let animateInterval;
+let animateInterval = 3;
 
 const previousY = (ctx) =>
   ctx.index === 0
@@ -219,9 +224,6 @@ export default {
       }
     },
     processResults(results) {
-      // 确定动画每帧间隔
-      animateInterval = (DURATION / results.length).toFixed(0);
-      console.log(animateInterval);
       // 在图表的上方显示时间段
       let text = ``;
       if (results.length >= 2) {
@@ -245,11 +247,28 @@ export default {
       this.labels = labels;
       this.datasets[0].data = data;
     },
-    handleExport() {
+    handleExportExcel() {
+      // 确定有数据可以导出
+      if (!this.results) {
+        return;
+      }
       const wb = utils.book_new();
       const ws = utils.json_to_sheet(this.results);
       utils.book_append_sheet(wb, ws);
-      writeFile(wb, "data.xlsx");
+      const chartTitle = this.chartOptions.plugins.title.text;
+      writeFile(wb, `${chartTitle}.xlsx`);
+    },
+    handleExportImage() {
+      // 确定有数据可以导出
+      if (!this.results) {
+        return;
+      }
+      const chartInstance = this.$refs.historyChart.$refs.lineChart.chart;
+      let a = document.createElement("a");
+      a.href = chartInstance.toBase64Image();
+      const chartTitle = this.chartOptions.plugins.title.text;
+      a.download = `${chartTitle}.png`;
+      a.click();
     },
   },
 };
