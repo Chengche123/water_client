@@ -46,15 +46,13 @@
 
 <script>
 import LineChart from "../../components/LineChart";
-import {
-  CHART_COLORS,
-  parseUdatetimeToDate,
-  parseUdatetime,
-} from "../../utils/utils";
+import { CHART_COLORS, parseUdatetime } from "../../utils/utils";
 import axios from "axios";
 import { utils, writeFile } from "xlsx";
 
-const duration = 10;
+// 动画总共支持 3000 毫秒
+const DURATION = 3000;
+let animateInterval;
 
 const previousY = (ctx) =>
   ctx.index === 0
@@ -103,27 +101,27 @@ export default {
           x: {
             type: "number",
             easing: "linear",
-            duration: duration,
+            duration: animateInterval,
             from: NaN, // the point is initially skipped
             delay(ctx) {
               if (ctx.type !== "data" || ctx.xStarted) {
                 return 0;
               }
               ctx.xStarted = true;
-              return ctx.index * duration;
+              return ctx.index * animateInterval;
             },
           },
           y: {
             type: "number",
             easing: "linear",
-            duration: duration,
+            duration: animateInterval,
             from: previousY,
             delay(ctx) {
               if (ctx.type !== "data" || ctx.yStarted) {
                 return 0;
               }
               ctx.yStarted = true;
-              return ctx.index * duration;
+              return ctx.index * animateInterval;
             },
           },
         },
@@ -221,6 +219,9 @@ export default {
       }
     },
     processResults(results) {
+      // 确定动画每帧间隔
+      animateInterval = (DURATION / results.length).toFixed(0);
+      console.log(animateInterval);
       // 在图表的上方显示时间段
       let text = ``;
       if (results.length >= 2) {
@@ -238,7 +239,7 @@ export default {
       // 保存 json 数据，用于导出
       this.results = results;
       for (let item of results) {
-        labels.push(parseUdatetimeToDate(item.udatetime));
+        labels.push(parseUdatetime(item.udatetime));
         data.push(item.value);
       }
       this.labels = labels;
