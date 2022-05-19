@@ -112,3 +112,13 @@ export function parseUdatetime(udatetime) {
     const datetime = date.toLocaleString()
     return datetime;
 }
+
+export function parseUdatetimeToTime(uDatetime) {
+    const date = new Date(uDatetime)
+    return date.toLocaleTimeString()
+}
+
+export function parseUdatetimeToDate(udatetime) {
+    const date = new Date(udatetime)
+    return date.toLocaleDateString()
+}

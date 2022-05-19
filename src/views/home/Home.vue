@@ -37,7 +37,7 @@
               用户授权
             </router-link>
           </li>
-          <li class="nav-item">
+          <!-- <li class="nav-item">
             <router-link
               :to="{ name: 'test' }"
               class="nav-link"
@@ -46,7 +46,7 @@
               <i class="iconfont icon">&#xe606;</i>
               调试
             </router-link>
-          </li>
+          </li> -->
         </ul>
       </nav>
       <!-- 不显示左侧导航栏时，撑开宽度 -->

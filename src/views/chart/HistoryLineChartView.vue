@@ -1,4 +1,13 @@
 <template>
+  <!-- 使用改变 key 的方便重建组件 -->
+  <LineChart
+    :datasets="datasets"
+    :labels="labels"
+    :chartOptions="chartOptions"
+    :width="800"
+    :height="200"
+    :key="lineChartKey"
+  />
   <div class="row my-3 justify-content-center">
     <div class="col-auto">从</div>
     <div class="col-auto">
@@ -33,20 +42,15 @@
       </button>
     </div>
   </div>
-  <!-- 使用改变 key 的方便重建组件 -->
-  <LineChart
-    :datasets="datasets"
-    :labels="labels"
-    :chartOptions="chartOptions"
-    :width="192"
-    :height="108"
-    :key="lineChartKey"
-  />
 </template>
 
 <script>
 import LineChart from "../../components/LineChart";
-import { CHART_COLORS, parseUdatetime } from "../../utils/utils";
+import {
+  CHART_COLORS,
+  parseUdatetimeToDate,
+  parseUdatetime,
+} from "../../utils/utils";
 import axios from "axios";
 import { utils, writeFile } from "xlsx";
 
@@ -84,6 +88,13 @@ export default {
         },
       ],
       chartOptions: {
+        // 显示标题
+        plugins: {
+          title: {
+            display: true,
+            text: "",
+          },
+        },
         interaction: {
           // if true, the interaction mode only applies when the mouse position intersects an item on the chart.
           intersect: false,
@@ -127,6 +138,10 @@ export default {
             },
           },
           x: {
+            ticks: {
+              // x 轴显示 10 个标签
+              maxTicksLimit: 10,
+            },
             // 不显示网格
             grid: {
               display: false,
@@ -150,12 +165,16 @@ export default {
           code: this.sensorCode,
           limit: 1000,
           offset: 0,
+          // 返回的数据按照时间倒序，取最新的 1000 条
+          ordering: "-udatetime",
         },
       });
       const results = response.data.results;
       if (!results) {
         return;
       }
+      // 调整顺序，按照时间顺序
+      results.reverse();
       this.processResults(results);
     } catch (error) {
       console.log(error);
@@ -182,7 +201,8 @@ export default {
         const response = await axios.get(this.dataPath, {
           params: {
             code: this.sensorCode,
-            limit: 100,
+            // 限制条数
+            limit: 1000,
             offset: 0,
             udatetime_after: this.datetime_after
               ? new Date(this.datetime_after).toISOString()
@@ -190,6 +210,8 @@ export default {
             udatetime_before: this.datetime_before
               ? new Date(this.datetime_before).toISOString()
               : null,
+            // 返回的数据按照时间顺序
+            ordering: "udatetime",
           },
         });
         const results = response.data.results;
@@ -199,16 +221,24 @@ export default {
       }
     },
     processResults(results) {
+      // 在图表的上方显示时间段
+      let text = ``;
+      if (results.length >= 2) {
+        const begin_datetime = parseUdatetime(results[0].udatetime);
+        const end_datetime = parseUdatetime(
+          results[results.length - 1].udatetime
+        );
+        text = `${begin_datetime} ~ ${end_datetime}`;
+      }
+      this.chartOptions.plugins.title.text = text;
       // 每次数据改变时重建组件
       this.lineChartKey += 1;
       const labels = [];
       const data = [];
-      // 前面的数据是最新的，所以倒序
-      results.reverse();
       // 保存 json 数据，用于导出
       this.results = results;
       for (let item of results) {
-        labels.push(parseUdatetime(item.udatetime));
+        labels.push(parseUdatetimeToDate(item.udatetime));
         data.push(item.value);
       }
       this.labels = labels;

@@ -3,8 +3,8 @@
     :labels="labels"
     :datasets="datasets"
     :chartOptions="chartOptions"
-    :width="192"
-    :height="108"
+    :width="width || 800"
+    :height="height || 200"
   />
   <div class="text-center"></div>
 </template>
@@ -14,7 +14,7 @@ import LineChart from "../../components/LineChart";
 import {
   CHART_COLORS,
   transparentize,
-  parseUdatetime,
+  parseUdatetimeToTime,
 } from "../../utils/utils";
 import axios from "axios";
 
@@ -29,6 +29,12 @@ export default {
     },
     dataPath: {
       type: String,
+    },
+    height: {
+      type: Number,
+    },
+    width: {
+      type: Number,
     },
   },
   async mounted() {
@@ -46,7 +52,7 @@ export default {
       let lables = [];
       let datasetsData = [];
       for (let { udatetime, value } of results) {
-        const datetime = parseUdatetime(udatetime);
+        const datetime = parseUdatetimeToTime(udatetime);
         lables.push(datetime);
         datasetsData.push(value);
       }
@@ -85,7 +91,9 @@ export default {
         return;
       }
 
-      this.labels = this.labels.slice(1).concat(parseUdatetime(val.udatetime));
+      this.labels = this.labels
+        .slice(1)
+        .concat(parseUdatetimeToTime(val.udatetime));
       this.datasets[0].data = this.datasets[0].data.slice(1).concat(val.value);
     },
   },

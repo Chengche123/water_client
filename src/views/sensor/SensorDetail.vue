@@ -1,23 +1,22 @@
 <template>
   <div class="container-fluid mt-2">
-    <div class="row align-items-center">
-      <!-- 数据实时更新 -->
-      <div class="col-4">
-        <RTLineChartView
-          v-if="sensorCode"
-          :sensorCode="sensorCode"
-          :dataPath="API.hx2022"
-        />
-      </div>
-      <!-- 历史数据 -->
-      <div class="col-8">
-        <HistoryLineChartView
-          v-if="sensorCode"
-          :sensorCode="sensorCode"
-          :dataPath="API.hx2022"
-        />
-      </div>
-    </div>
+    <!-- 数据实时更新 -->
+    <RTLineChartView
+      v-if="sensorCode"
+      :sensorCode="sensorCode"
+      :dataPath="API.hx2022"
+      :width="800"
+      :height="200"
+    />
+  </div>
+  <hr />
+  <div class="container-fluid mt-2">
+    <!-- 历史数据 -->
+    <HistoryLineChartView
+      v-if="sensorCode"
+      :sensorCode="sensorCode"
+      :dataPath="API.hx2022"
+    />
   </div>
   <div class="container-fluid">
     <SensorDetailAlarmTable v-if="sensorJson" :sensorJson="sensorJson" />
